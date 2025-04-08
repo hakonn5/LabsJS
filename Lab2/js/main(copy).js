@@ -1,9 +1,4 @@
 import { transactions } from "./transactions.js";
-import * as readline from 'node:readline/promises';
-import { stdin as input, stdout as output } from 'node:process';
-
-// Создаем интерфейс readline
-const rl = readline.createInterface({ input, output });
 
 /**
  * Возвращает массив уникальных типов транзакций
@@ -25,7 +20,7 @@ const getUniqueTransactionTypes = (transactions) => {
  * @returns {number} Общая сумма всех транзакций
  */
 const calculateTotalAmount = (transactions) => {
-    // Используем reduce, чтобы посчитать сумму всех transaction_amount 
+    // Используем reduce, чтобы посчитать сумму всех transaction_amount
     // Начальное значение суммы - 0, к нему прибавляем сумму каждой транзакции
     const total = transactions.reduce((sum, t) => sum + t.transaction_amount, 0);
     // Возвращаем итоговую сумму
@@ -262,105 +257,57 @@ const mapTransactionDescriptions = (transactions) => {
     return descriptions;
 };
 
-// Реализация меню
-async function runMenu() {
-    let running = true;
-    while (running) {
-        console.log("\n=== Меню обработки транзакций ===");
-        console.log("1. Получить уникальные типы транзакций");
-        console.log("2. Вычислить общую сумму всех транзакций");
-        console.log("3. Вычислить сумму транзакций за указанную дату");
-        console.log("4. Получить транзакции указанного типа");
-        console.log("5. Получить транзакции в диапазоне дат");
-        console.log("6. Получить транзакции по названию продавца");
-        console.log("7. Вычислить среднюю сумму транзакций");
-        console.log("8. Получить транзакции в диапазоне сумм");
-        console.log("9. Вычислить общую сумму дебетовых транзакций");
-        console.log("10. Найти месяц с наибольшим количеством транзакций");
-        console.log("11. Найти месяц с наибольшим количеством дебетовых транзакций");
-        console.log("12. Определить наиболее частый тип транзакций");
-        console.log("13. Получить транзакции до указанной даты");
-        console.log("14. Найти транзакцию по идентификатору");
-        console.log("15. Преобразовать транзакции в массив описаний");
-        console.log("0. Выход");
+// Тестирование функций
+console.log("Уникальные типы:", getUniqueTransactionTypes(transactions));
+console.log("Общая сумма:", calculateTotalAmount(transactions));
+console.log("Сумма за 2019:", calculateTotalAmountByDate(transactions, 2019));
+console.log("Дебетовые транзакции:", getTransactionByType(transactions, "debit"));
+console.log("Диапазон дат (2019-01-01 ~ 2019-01-02):", getTransactionsInDateRange(transactions, "2019-01-01", "2019-01-02"));
+console.log("По продавцу (SuperMart):", getTransactionsByMerchant(transactions, "SuperMart"));
+console.log("Средняя сумма:", calculateAverageTransactionAmount(transactions));
+console.log("Диапазон сумм (50 ~ 100):", getTransactionsByAmountRange(transactions, 50, 100));
+console.log("Общая сумма дебета:", calculateTotalDebitAmount(transactions));
+console.log("Месяц с макс. транзакциями:", findMostTransactionsMonth(transactions));
+console.log("Месяц с макс. дебетом:", findMostDebitTransactionMonth(transactions));
+console.log("Частый тип:", mostTransactionTypes(transactions));
+console.log("До даты (2019-01-02):", getTransactionsBeforeDate(transactions, "2019-01-02"));
+console.log("По ID (1):", findTransactionById(transactions, "1"));
+console.log("Описания:", mapTransactionDescriptions(transactions));
 
-        const choice = await rl.question("Выберите пункт меню (0-15): ");
+// Тест с пустым массивом
+const emptyTransactions = [];
+console.log("\nТесты с пустым массивом:\n");
+console.log("Уникальные типы:", getUniqueTransactionTypes(emptyTransactions));
+console.log("Общая сумма:", calculateTotalAmount(emptyTransactions));
+console.log("Сумма за 2019:", calculateTotalAmountByDate(emptyTransactions, 2019));
+console.log("Дебетовые транзакции:", getTransactionByType(emptyTransactions, "debit"));
+console.log("Диапазон дат (2019-01-01 ~ 2019-01-02):", getTransactionsInDateRange(emptyTransactions, "2019-01-01", "2019-01-02"));
+console.log("По продавцу (SuperMart):", getTransactionsByMerchant(emptyTransactions, "SuperMart"));
+console.log("Средняя сумма:", calculateAverageTransactionAmount(emptyTransactions));
+console.log("Диапазон сумм (50 ~ 100):", getTransactionsByAmountRange(emptyTransactions, 50, 100));
+console.log("Общая сумма дебета:", calculateTotalDebitAmount(emptyTransactions));
+console.log("Месяц с макс. транзакциями:", findMostTransactionsMonth(emptyTransactions));
+console.log("Месяц с макс. дебетом:", findMostDebitTransactionMonth(emptyTransactions));
+console.log("Частый тип:", mostTransactionTypes(emptyTransactions));
+console.log("До даты (2019-01-02):", getTransactionsBeforeDate(emptyTransactions, "2019-01-02"));
+console.log("По ID (1):", findTransactionById(emptyTransactions, "1"));
+console.log("Описания:", mapTransactionDescriptions(emptyTransactions));
 
-        switch (choice) {
-            case "1":
-                console.log("Уникальные типы:", getUniqueTransactionTypes(transactions));
-                break;
-            case "2":
-                console.log("Общая сумма:", calculateTotalAmount(transactions));
-                break;
-            case "3":
-                const year = await rl.question("Введите год (или оставьте пустым): ");
-                const month = await rl.question("Введите месяц (0-11, или оставьте пустым): ");
-                const day = await rl.question("Введите день (или оставьте пустым): ");
-                console.log("Сумма за дату:", calculateTotalAmountByDate(
-                    transactions,
-                    year ? parseInt(year) : undefined,
-                    month ? parseInt(month) : undefined,
-                    day ? parseInt(day) : undefined
-                ));
-                break;
-            case "4":
-                const type = await rl.question("Введите тип (debit/credit): ");
-                console.log("Транзакции типа", type + ":", getTransactionByType(transactions, type));
-                break;
-            case "5":
-                const startDate = await rl.question("Введите начальную дату (YYYY-MM-DD): ");
-                const endDate = await rl.question("Введите конечную дату (YYYY-MM-DD): ");
-                console.log("Транзакции в диапазоне:", getTransactionsInDateRange(transactions, startDate, endDate));
-                break;
-            case "6":
-                const merchant = await rl.question("Введите название продавца: ");
-                console.log("Транзакции продавца", merchant + ":", getTransactionsByMerchant(transactions, merchant));
-                break;
-            case "7":
-                console.log("Средняя сумма:", calculateAverageTransactionAmount(transactions));
-                break;
-            case "8":
-                const minAmount = parseFloat(await rl.question("Введите минимальную сумму: "));
-                const maxAmount = parseFloat(await rl.question("Введите максимальную сумму: "));
-                console.log("Транзакции в диапазоне сумм:", getTransactionsByAmountRange(transactions, minAmount, maxAmount));
-                break;
-            case "9":
-                console.log("Общая сумма дебета:", calculateTotalDebitAmount(transactions));
-                break;
-            case "10":
-                console.log("Месяц с макс. транзакциями:", findMostTransactionsMonth(transactions));
-                break;
-            case "11":
-                console.log("Месяц с макс. дебетом:", findMostDebitTransactionMonth(transactions));
-                break;
-            case "12":
-                console.log("Частый тип:", mostTransactionTypes(transactions));
-                break;
-            case "13":
-                const beforeDate = await rl.question("Введите дату (YYYY-MM-DD): ");
-                console.log("Транзакции до даты:", getTransactionsBeforeDate(transactions, beforeDate));
-                break;
-            case "14":
-                const id = await rl.question("Введите ID транзакции: ");
-                console.log("Транзакция по ID:", findTransactionById(transactions, id));
-                break;
-            case "15":
-                console.log("Описания:", mapTransactionDescriptions(transactions));
-                break;
-            case "0":
-                console.log("Выход из программы.");
-                running = false;
-                break;
-            default:
-                console.log("Неверный выбор, попробуйте снова.");
-        }
-
-        if (choice !== "0") {
-            await rl.question("Нажмите Enter для продолжения...");
-        }
-    }
-    rl.close();
-}
-
-runMenu();
+// Тест с одной транзакцией
+const singleTransaction = [transactions[0]];
+console.log("\nТесты с одной транзакцией:\n");
+console.log("Уникальные типы:", getUniqueTransactionTypes(singleTransaction));
+console.log("Общая сумма:", calculateTotalAmount(singleTransaction));
+console.log("Сумма за 2019:", calculateTotalAmountByDate(singleTransaction, 2019));
+console.log("Дебетовые транзакции:", getTransactionByType(singleTransaction, "debit"));
+console.log("Диапазон дат (2019-01-01 ~ 2019-01-02):", getTransactionsInDateRange(singleTransaction, "2019-01-01", "2019-01-02"));
+console.log("По продавцу (SuperMart):", getTransactionsByMerchant(singleTransaction, "SuperMart"));
+console.log("Средняя сумма:", calculateAverageTransactionAmount(singleTransaction));
+console.log("Диапазон сумм (50 ~ 100):", getTransactionsByAmountRange(singleTransaction, 50, 100));
+console.log("Общая сумма дебета:", calculateTotalDebitAmount(singleTransaction));
+console.log("Месяц с макс. транзакциями:", findMostTransactionsMonth(singleTransaction));
+console.log("Месяц с макс. дебетом:", findMostDebitTransactionMonth(singleTransaction));
+console.log("Частый тип:", mostTransactionTypes(singleTransaction));
+console.log("До даты (2019-01-02):", getTransactionsBeforeDate(singleTransaction, "2019-01-02"));
+console.log("По ID (1):", findTransactionById(singleTransaction, "1"));
+console.log("Описания:", mapTransactionDescriptions(singleTransaction));
