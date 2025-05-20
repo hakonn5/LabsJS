@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crypto Portfolio Tracker</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="app-container">
+      <header class="app-header">
+        <div class="logo">
+          <i class="fas fa-coins"></i>
+          <h1>Crypto Portfolio</h1>
+        </div>
+        <div class="total-value">
+          <span>Общая стоимость:</span>
+          <span id="totalValue">$0.00</span>
+        </div>
+      </header>
+
+      <main class="app-main">
+        <section class="add-crypto-section">
+          <h2>Добавить криптовалюту</h2>
+          <form id="addCryptoForm">
+            <div class="form-group">
+              <label for="cryptoSelect">Криптовалюта:</label>
+              <select id="cryptoSelect" required>
+                <option value="">-- Выберите криптовалюту --</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="cryptoAmount">Количество:</label>
+              <input
+                type="number"
+                id="cryptoAmount"
+                min="0.00000001"
+                step="any"
+                required
+                placeholder="0.00"
+              />
+            </div>
+            <button type="submit" class="btn-add">Добавить</button>
+          </form>
+          <div id="formError" class="error-message"></div>
+        </section>
+
+        <section class="portfolio-section">
+          <div class="section-header">
+            <h2>Ваш портфель</h2>
+            <div class="controls">
+              <input type="text" id="searchInput" placeholder="Поиск..." />
+              <select id="sortSelect">
+                <option value="name-asc">По имени (А-Я)</option>
+                <option value="name-desc">По имени (Я-А)</option>
+                <option value="value-asc">По стоимости (↑)</option>
+                <option value="value-desc">По стоимости (↓)</option>
+              </select>
+            </div>
+          </div>
+          <div class="portfolio-stats">
+            <div class="stat-card">
+              <span>Активов</span>
+              <span id="assetsCount">0</span>
+            </div>
+            <div class="stat-card">
+              <span>24ч изменение</span>
+              <span id="dailyChange">+0.00%</span>
+            </div>
+          </div>
+          <div id="portfolioList" class="portfolio-list"></div>
+          <div id="emptyPortfolio" class="empty-portfolio">
+            <i class="fas fa-wallet"></i>
+            <p>Ваш портфель пуст</p>
+            <p>Добавьте криптовалюту, чтобы начать отслеживание</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="cryptoModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal">&times;</span>
+        <h2 id="modalTitle">Детали</h2>
+        <div id="modalContent"></div>
+      </div>
+    </div>
+
+    <script type="module" src="./js/app.js"></script>
+  </body>
+</html>
